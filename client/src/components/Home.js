@@ -4,16 +4,16 @@ import SecondaryWindow from '../utils/SecondaryWindow';
 import List from '../utils/List';
 import "./Home.css";
 
-export default function Home({category, brand, handleCheck, cars, ...rest}){
+export default function Home({category, brand, cars, ...rest}){
 
     return(
         <Container fluid >
             <Row >
                 <Col md={4} sm={4} className="border border-dark">
                         <SecondaryWindow title={"Filtri"}>
-                            <MainFilter name="Categoria" secondaryFilters={category} handleCheck={handleCheck}>
+                            <MainFilter name="Categoria" secondaryFilters={category} {...rest}>
                             </MainFilter>
-                            <MainFilter name="Marca" secondaryFilters={brand} handleCheck={handleCheck}>
+                            <MainFilter name="Marca" secondaryFilters={brand} {...rest}>
                             </MainFilter>
                         </SecondaryWindow>
                 </Col>

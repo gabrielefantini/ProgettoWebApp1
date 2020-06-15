@@ -1,6 +1,8 @@
 import React from 'react';
 import Home from './components/Home';
 import Login from './components/Login';
+//import da modificare
+import UserRent from './components/User/UserRent';
 import './App.css';
 
 function App() {
@@ -32,8 +34,17 @@ function App() {
   /*return (
     <Home category={categorie} brand={marche} handleCheck={handleChek} cars={cars}></Home>
   ); */
+
+  //Login input props mokup
+  const handleLogin = (a,b) => console.log(a,b);
+  //end of Login input props mokup
+
+  /*return(
+    <Login handleLogin={handleLogin}></Login>
+  );*/
+
   return(
-    <Login></Login>
+    <UserRent ></UserRent>
   );
 }
 

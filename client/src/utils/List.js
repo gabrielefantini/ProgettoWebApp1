@@ -6,8 +6,8 @@ export default function List({listElements,...rest}){
     return(
         <Row>
             {listElements.map((element, index) => (
-                <Col md={6} lg={4} xl={2} >
-                    <ListElement key={index} {...element}/>
+                <Col md={6} lg={4} xl={2}  key={index}>
+                    <ListElement {...element}/>
                 </Col>
             ))}
         </Row>
