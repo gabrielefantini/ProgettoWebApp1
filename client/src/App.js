@@ -2,7 +2,7 @@ import React from 'react';
 import Home from './components/Home';
 import Login from './components/Login';
 //import da modificare
-import UserRent from './components/User/UserRent';
+import User from './components/User/User';
 import './App.css';
 
 function App() {
@@ -31,9 +31,9 @@ function App() {
   ];
   //end of home input props mokup
   
-  /*return (
+  return (
     <Home category={categorie} brand={marche} handleCheck={handleChek} cars={cars}></Home>
-  ); */
+  );
 
   //Login input props mokup
   const handleLogin = (a,b) => console.log(a,b);
@@ -42,10 +42,11 @@ function App() {
   /*return(
     <Login handleLogin={handleLogin}></Login>
   );*/
-
+  /*
   return(
-    <UserRent ></UserRent>
+    <User ></User>
   );
+  */
 }
 
 export default App;
