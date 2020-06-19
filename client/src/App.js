@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Link, Route, Switch, useLocation} from "react-router-dom";
+import { BrowserRouter as Router, Link, Route, Switch} from "react-router-dom";
 import NoMatch from './NoMatch';
 import NavBar from './components/NavBar';
 import Home from './components/Home';
@@ -35,79 +35,7 @@ function App() {
     {brand:"lamborghini", name:"panda", category:"A"}
   ];
   */
-  const [cars, setCars] = React.useState([]);
-  const location = useLocation();
-
   
-    React.useEffect(() => {
-      API.getPublicCars()
-      .then((res)=>{
-          setCars(res);
-          setCarsToBeDisplayed(res);
-      });
-    }, [location]);
-
-  //fine parte di mokup
-
-  //gestione delle macchine mostrate sulla home
-  const [categories, setCategories] = React.useState(cat);
-  const [brands, setBrands] = React.useState(bran);
-  const [CarsToBeDisplayed, setCarsToBeDisplayed] = React.useState([]);
-
-  //cosa succede se viene selezionato un filtro tipo categoria
-  const handleCategories = (name, isChecked) => {
-    let x = [...categories];
-    x.map((el) => {
-      if(el.name === name) 
-        el.isChecked = !isChecked;
-      });
-    
-    setCategories(x);
-    filterCars();
-  }
-  //cosa succede se viene selezionato un filtro tipo marca
-  const handleBrands = (name, isChecked) => {
-    let x = [...brands];
-    x.map((el) => {
-      if(el.name === name) 
-        el.isChecked = !isChecked;
-      });
-
-    setBrands(x);
-    filterCars();
-  }
-
-  //filtro tutte le macchine in base ai filtri attualmente attivi
-  //N.B. ogni volta filtro il pool originale di macchine!!!
-
-  const filterCars = () => {
-    let selectedCategories = [];
-    categories.map((cat) => {
-      if(cat.isChecked)
-        selectedCategories.push(cat.name)
-      });
-
-    let selectedBrands = [];
-    brands.map((bran) => {
-      if(bran.isChecked)
-        selectedBrands.push(bran.name)
-      });
-    
-    let selectedCars = cars;
-
-    if(selectedCategories.length !== 0){
-      selectedCars = selectedCars.filter((car) => {
-        return (selectedCategories.includes(car.category));
-      });
-    }
-    if(selectedBrands.length !== 0){
-      selectedCars = selectedCars.filter((car) => {
-        return (selectedBrands.includes(car.brand));
-      });
-    }
-    setCarsToBeDisplayed(selectedCars);
-  }
-  //fine della gestione degli input del componente home
   
   //Login input props mokup
   const handleLogin = (a,b) => console.log(a,b);
@@ -120,7 +48,7 @@ function App() {
           <Route 
             exact path="/" 
             render={(props) => (
-              <Home category={categories} brand={brands} handleCheck={[handleCategories, handleBrands]} cars={CarsToBeDisplayed}></Home>
+              <Home cat={cat} bran={bran}></Home>
             )}
           />
           <Route 
