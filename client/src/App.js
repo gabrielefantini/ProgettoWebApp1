@@ -1,23 +1,31 @@
 import React from 'react';
-import { BrowserRouter as Router, Link, Route} from "react-router-dom";
+import { BrowserRouter as Router, Link, Route, Switch, useLocation} from "react-router-dom";
+import NoMatch from './NoMatch';
 import NavBar from './components/NavBar';
 import Home from './components/Home';
 import Login from './components/Login';
 import User from './components/User/User';
 import './App.css';
+import PrivateRoute from './PrivateRoute';
+import { AuthContext } from './context/auth';
+import API from './api/API';
+
 
 function App() {
   const cat=[
       {name:"A", isChecked:false},
-      {name:"B", isChecked:false}
+      {name:"B", isChecked:false},
+      {name:"C", isChecked:false},
+      {name:"D", isChecked:false},
+      {name:"E", isChecked:false}
     ];
   const bran=[
-      {name:"audi", isChecked:false},
-      {name:"fiat", isChecked:false},
-      {name:"ferrari", isChecked:false},
-      {name:"lamborghini", isChecked:false}
+      {name:"Audi", isChecked:false},
+      {name:"Fiat", isChecked:false},
+      {name:"Ferrari", isChecked:false},
+      {name:"Lamborghini", isChecked:false}
     ];
-
+  /*
   const ca=[
     {brand:"fiat", name:"punto", category:"A"},
     {brand:"audi", name:"panda", category:"A"},
@@ -26,15 +34,25 @@ function App() {
     {brand:"fiat", name:"punto", category:"B"},
     {brand:"lamborghini", name:"panda", category:"A"}
   ];
+  */
+  const [cars, setCars] = React.useState([]);
+  const location = useLocation();
 
-  const [cars, setCars] = React.useState(ca);
+  
+    React.useEffect(() => {
+      API.getPublicCars()
+      .then((res)=>{
+          setCars(res);
+          setCarsToBeDisplayed(res);
+      });
+    }, [location]);
 
   //fine parte di mokup
 
   //gestione delle macchine mostrate sulla home
   const [categories, setCategories] = React.useState(cat);
   const [brands, setBrands] = React.useState(bran);
-  const [CarsToBeDisplayed, setCarsToBeDisplayed] = React.useState(ca);
+  const [CarsToBeDisplayed, setCarsToBeDisplayed] = React.useState([]);
 
   //cosa succede se viene selezionato un filtro tipo categoria
   const handleCategories = (name, isChecked) => {
@@ -95,23 +113,32 @@ function App() {
   const handleLogin = (a,b) => console.log(a,b);
 
   return (
-    <>
+    <AuthContext.Provider value={false}>
       <Router>
         <NavBar></NavBar>
-        <Route 
-          exact path="/" 
-          render={(props) => (
-            <Home category={categories} brand={brands} handleCheck={[handleCategories, handleBrands]} cars={CarsToBeDisplayed}></Home>
-          )}
-        />
-        <Route 
-          path="/login"
-          render={(props) => (
-            <Login handleLogin={handleLogin}></Login>
-          )}
-        />
+        <Switch>
+          <Route 
+            exact path="/" 
+            render={(props) => (
+              <Home category={categories} brand={brands} handleCheck={[handleCategories, handleBrands]} cars={CarsToBeDisplayed}></Home>
+            )}
+          />
+          <Route 
+            path="/login"
+            render={(props) => (
+              <Login handleLogin={handleLogin}></Login>
+            )}
+          />
+          <PrivateRoute
+            path="/user"
+            component={User}
+          />
+          <Route>
+            <NoMatch/>
+          </Route>
+        </Switch>  
       </Router>
-    </>
+    </AuthContext.Provider>
   );
 
  

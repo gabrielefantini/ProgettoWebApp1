@@ -1,9 +1,11 @@
 import React from 'react';
 import { Navbar, Nav, Form, Button} from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../context/auth';
 
+export default function NavBar({username, logout, ...rest}){
+    const isAuthenticated = useAuth();
 
-export default function NavBar({logged, username, logout, ...rest}){
     return(
         <Navbar variant="dark" bg="dark"> 
             <Link to="/">
@@ -14,10 +16,10 @@ export default function NavBar({logged, username, logout, ...rest}){
             </Link>
             <Navbar.Toggle />
             <Navbar.Collapse className="justify-content-end">
-                {logged?(
+                {isAuthenticated?(
                     <>
                         <Navbar.Text>
-                            Signed in as: {username}
+                        Signed in as: {username}
                         </Navbar.Text>
                         <Button variant="danger">Logout</Button>
                     </>
