@@ -27,9 +27,10 @@ export default function Home({category, brand, cars, ...rest}){
     );
 }
 
-function MainFilter({name, secondaryFilters, ...rest}){
+function MainFilter({name, secondaryFilters, handleCheck, ...rest}){
     const [open, setOpen] = React.useState(false);
     //N.B. in <Collapse> l'uso dell'id è segnalato come deprecato, chiedere al Prof
+    
     return(
        <Row>
            <Col md={12}>
@@ -43,7 +44,7 @@ function MainFilter({name, secondaryFilters, ...rest}){
             <Collapse in={open}>
                 <Col id="filters">
                     {secondaryFilters.map((filter, index) => (
-                        <SecondaryFilter key={index} {...filter} {...rest}/>
+                        <SecondaryFilter key={index} {...filter} {...rest} handleCheck={name==="Categoria"?handleCheck[0]:handleCheck[1]}/>
                     ))}
                 </Col>
             </Collapse>
@@ -58,7 +59,7 @@ function SecondaryFilter({name, handleCheck, isChecked, ...rest}){
                 {name}
             </Col>
             <Col>
-                <Form.Check checked={isChecked} onChange={() => handleCheck(name)} />
+                <Form.Check checked={isChecked} onChange={() => handleCheck(name, isChecked)} />
             </Col>
         </Row>
     );

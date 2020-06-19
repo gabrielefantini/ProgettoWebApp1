@@ -1,10 +1,17 @@
 import React from 'react';
 import { Navbar, Nav, Form, Button} from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+
 
 export default function NavBar({logged, username, logout, ...rest}){
     return(
-        <Navbar variant="dark" bg="dark">
-            <Navbar.Brand href="#home">AutoNoleggio</Navbar.Brand>
+        <Navbar variant="dark" bg="dark"> 
+            <Link to="/">
+                <Navbar.Brand>
+                    AutoNoleggio
+                
+                </Navbar.Brand>
+            </Link>
             <Navbar.Toggle />
             <Navbar.Collapse className="justify-content-end">
                 {logged?(
@@ -14,7 +21,10 @@ export default function NavBar({logged, username, logout, ...rest}){
                         </Navbar.Text>
                         <Button variant="danger">Logout</Button>
                     </>
-                ):(<Button>Login</Button>)}
+                ):(
+                <Link to="/login">
+                    <Button>Login</Button>
+                </Link>)}
             </Navbar.Collapse>
         </Navbar>
     );
