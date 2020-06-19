@@ -1,16 +1,24 @@
 import React from 'react';
 import { Form, Button, Row, Col } from 'react-bootstrap';
+import { useLocation } from 'react-router-dom';
 import SecondaryWindow from '../utils/SecondaryWindow';
+import NavBar from './NavBar';
 
 export default function Login({...rest}){
+    
+    const location = useLocation();
+
     return(
-        <SecondaryWindow title="Login">
-            <Row>
-                <Col md={{span:6, offset:3}}>
-                    <LoginForm {...rest}></LoginForm>
-                </Col>
-            </Row>
-        </SecondaryWindow>
+        <>
+            <NavBar location={location}></NavBar>
+            <SecondaryWindow title="Login">
+                <Row>
+                    <Col md={{span:6, offset:3}}>
+                        <LoginForm {...rest}></LoginForm>
+                    </Col>
+                </Row>
+            </SecondaryWindow>
+        </>
         );
 }
 

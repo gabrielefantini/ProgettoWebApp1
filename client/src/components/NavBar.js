@@ -3,7 +3,7 @@ import { Navbar, Nav, Form, Button} from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/auth';
 
-export default function NavBar({username, logout, ...rest}){
+export default function NavBar({username, logout, location, ...rest}){
     const isAuthenticated = useAuth();
 
     return(
@@ -23,10 +23,10 @@ export default function NavBar({username, logout, ...rest}){
                         </Navbar.Text>
                         <Button variant="danger">Logout</Button>
                     </>
-                ):(
-                <Link to="/login">
-                    <Button>Login</Button>
-                </Link>)}
+                ):(location.pathname==="/"?(
+                    <Link to="/login">
+                        <Button>Login</Button>
+                    </Link>):(<div></div>))}
             </Navbar.Collapse>
         </Navbar>
     );

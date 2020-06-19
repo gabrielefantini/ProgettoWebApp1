@@ -4,6 +4,7 @@ import { useLocation } from 'react-router-dom';
 import API from '../api/API';
 import SecondaryWindow from '../utils/SecondaryWindow';
 import List from '../utils/List';
+import NavBar from './NavBar';
 import "./Home.css";
 
 export default function Home({cat, bran, ...rest}){
@@ -82,23 +83,26 @@ const [cars, setCars] = React.useState([]);
   //fine della gestione degli input
 
     return(
-        <Container fluid >
-            <Row >
-                <Col md={4} sm={4} className="border border-dark">
-                        <SecondaryWindow title={"Filtri"}>
-                            <MainFilter name="Categoria" secondaryFilters={categories} handleCheck={handleCategories}>
-                            </MainFilter>
-                            <MainFilter name="Marca" secondaryFilters={brands} handleCheck={handleBrands}>
-                            </MainFilter>
+        <>
+            <NavBar location={location}></NavBar>
+            <Container fluid >
+                <Row >
+                    <Col md={4} sm={4} className="border border-dark">
+                            <SecondaryWindow title={"Filtri"}>
+                                <MainFilter name="Categoria" secondaryFilters={categories} handleCheck={handleCategories}>
+                                </MainFilter>
+                                <MainFilter name="Marca" secondaryFilters={brands} handleCheck={handleBrands}>
+                                </MainFilter>
+                            </SecondaryWindow>
+                    </Col>
+                    <Col md={8} sm={8} >
+                        <SecondaryWindow title={"Risultati Ricerca"} >
+                            <List listElements={carsToBeDisplayed}/>
                         </SecondaryWindow>
-                </Col>
-                <Col md={8} sm={8} >
-                    <SecondaryWindow title={"Risultati Ricerca"} >
-                        <List listElements={carsToBeDisplayed}/>
-                    </SecondaryWindow>
-                </Col>
-            </Row>
-        </Container>
+                    </Col>
+                </Row>
+            </Container>
+        </>
     );
 }
 

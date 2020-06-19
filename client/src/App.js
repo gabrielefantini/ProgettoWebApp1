@@ -1,7 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Link, Route, Switch} from "react-router-dom";
 import NoMatch from './NoMatch';
-import NavBar from './components/NavBar';
 import Home from './components/Home';
 import Login from './components/Login';
 import User from './components/User/User';
@@ -43,7 +42,6 @@ function App() {
   return (
     <AuthContext.Provider value={false}>
       <Router>
-        <NavBar></NavBar>
         <Switch>
           <Route 
             exact path="/" 
