@@ -10,7 +10,8 @@ const jsonwebtoken = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 
 const jwtSecret = '6xvL4xkAAbG49hcXf5GIYSvkDICiUAR6EdR5dLdwW7hMzUjjMUe9t6M5kSAYxsvX';
-const expireTime = 300; //seconds
+const expireTime = 400; //seconds
+
 // Authorization error
 const authErrorObj = { errors: [{  'param': 'Server', 'msg': 'Authorization error' }] };
 
@@ -24,7 +25,7 @@ app.use(morgan('tiny'));
 // Process body content
 app.use(express.json());
 
-/*
+
 // Authentication endpoint
 app.post('/api/login', (req, res) => {
     const username = req.body.username;
@@ -63,7 +64,7 @@ app.use(cookieParser());
 app.post('/api/logout', (req, res) => {
     res.clearCookie('token').end();
 });
-*/
+
 
 //GET /cars/public/<filter>
 app.get('/api/cars/public', (req, res) => {
@@ -78,7 +79,7 @@ app.get('/api/cars/public', (req, res) => {
        });
 });
 
-/*
+
 
 // For the rest of the code, all APIs require authentication
 app.use(
@@ -102,7 +103,7 @@ app.get('/api/user', (req,res) => {
     const user = req.user && req.user.user;
     userDao.getUserById(user)
         .then((user) => {
-            res.json({id: user.id, name: user.name});
+            res.json({id: user.id, username: user.username});
         }).catch(
         (err) => {
          res.status(401).json(authErrorObj);
@@ -110,6 +111,7 @@ app.get('/api/user', (req,res) => {
       );
 });
 
+/*
 //GET /tasks
 app.get('/api/tasks', (req, res) => {
     const user = req.user && req.user.user;

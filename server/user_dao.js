@@ -10,17 +10,16 @@ const bcrypt = require('bcrypt');
  */
 const createUser = function (row) {
     const id = row.id;
-    const name = row.name;
-    const email = row.email;
+    const username = row.username;
     const hash = row.hash;
    
-    return new User(id, name, email, hash);
+    return new User(id, username, hash);
 }
 
-exports.getUser = function (email) {
+exports.getUser = function (username) {
     return new Promise((resolve, reject) => {
-        const sql = "SELECT * FROM user WHERE email = ?"
-        db.all(sql, [email], (err, rows) => {
+        const sql = "SELECT * FROM User WHERE username = ?"
+        db.all(sql, [username], (err, rows) => {
             if (err) 
                 reject(err);
             else if (rows.length === 0)

@@ -1,20 +1,43 @@
 import React from 'react';
+import API from '../api/API';
 import { Form, Button, Row, Col } from 'react-bootstrap';
-import { useLocation } from 'react-router-dom';
+import { Link, Redirect, useHistory } from "react-router-dom";
 import SecondaryWindow from '../utils/SecondaryWindow';
 import NavBar from './NavBar';
 
-export default function Login({...rest}){
+export default function Login(){
     
-    const location = useLocation();
+    const history = useHistory();
+    const [username, setUsername] = React.useState("");
+    const [password, setPassword] = React.useState("");
+    const [isErr, setErr] = React.useState(false);
+
+    const postLogin = () => {
+        API.userLogin(username, password)
+        .then( result => {
+            history.push({pathname:"/user"});
+        })
+        .catch((errorObj) => {
+            console.log(errorObj);
+            setErr(true);
+        });
+    }
+
+    React.useEffect(() => {
+        API.isAuthenticated()
+        .then( result => {
+            history.push({pathname:"/user"});
+        })
+    }, [history]);
 
     return(
         <>
-            <NavBar location={location}></NavBar>
+            <NavBar location={"/login"}></NavBar>
             <SecondaryWindow title="Login">
                 <Row>
                     <Col md={{span:6, offset:3}}>
-                        <LoginForm {...rest}></LoginForm>
+                        <LoginForm username={username} password={password} handleUsername={setUsername} handlePassword={setPassword} postLogin={postLogin}></LoginForm>
+                        { isErr &&<p>Parametri sbagliati</p> }
                     </Col>
                 </Row>
             </SecondaryWindow>
@@ -22,10 +45,7 @@ export default function Login({...rest}){
         );
 }
 
-function LoginForm({handleLogin,...rest}){
-
-    const [username, setUsername] = React.useState("");
-    const [password, setPassword] = React.useState("");
+function LoginForm({postLogin, username, password, handleUsername, handlePassword, ...rest}){
     
     const validateForm = () => {
         return username.length>0 && password.length>0;
@@ -34,18 +54,18 @@ function LoginForm({handleLogin,...rest}){
     const handleSubmit = (event) => {
         event.preventDefault();
         //() => handleLogin(username, password);
-        handleLogin(username, password);
+        postLogin();
     }
 
     return(
-        <Form onSubmit={(event) => handleSubmit(event)}>
+        <Form method="POST" onSubmit={(event) => handleSubmit(event)}>
             <Form.Group controlId="username">
                 <Form.Label>Nome Utente</Form.Label>
                 <Form.Control 
                     type="username" 
                     placeholder="Inserire nome utente" 
                     value={username}
-                    onChange={ e => setUsername(e.target.value)}
+                    onChange={ e => handleUsername(e.target.value)}
                     />
             </Form.Group>
             <Form.Group controlId="password">
@@ -54,7 +74,7 @@ function LoginForm({handleLogin,...rest}){
                     type="password"
                     placeholder="Password" 
                     value={password}
-                    onChange={ e => setPassword(e.target.value)} 
+                    onChange={ e => handlePassword(e.target.value)} 
                     />
             </Form.Group>
             <Button variant="primary" disabled={!validateForm()} type="submit">

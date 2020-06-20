@@ -5,9 +5,6 @@ import Home from './components/Home';
 import Login from './components/Login';
 import User from './components/User/User';
 import './App.css';
-import PrivateRoute from './PrivateRoute';
-import { AuthContext } from './context/auth';
-import API from './api/API';
 
 
 function App() {
@@ -34,13 +31,8 @@ function App() {
     {brand:"lamborghini", name:"panda", category:"A"}
   ];
   */
-  
-  
-  //Login input props mokup
-  const handleLogin = (a,b) => console.log(a,b);
 
   return (
-    <AuthContext.Provider value={false}>
       <Router>
         <Switch>
           <Route 
@@ -52,19 +44,20 @@ function App() {
           <Route 
             path="/login"
             render={(props) => (
-              <Login handleLogin={handleLogin}></Login>
+              <Login></Login>
             )}
           />
-          <PrivateRoute
+          <Route
             path="/user"
-            component={User}
+            render={(props) => (
+              <User></User>
+            )}
           />
           <Route>
             <NoMatch/>
           </Route>
         </Switch>  
       </Router>
-    </AuthContext.Provider>
   );
 
  

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Container, Row, Col, Form, Button, Collapse } from 'react-bootstrap';
-import { useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import API from '../api/API';
 import SecondaryWindow from '../utils/SecondaryWindow';
 import List from '../utils/List';
@@ -9,8 +9,8 @@ import "./Home.css";
 
 export default function Home({cat, bran, ...rest}){
 
-const [cars, setCars] = React.useState([]);
-  const location = useLocation();
+  const [cars, setCars] = React.useState([]);
+  const location = useHistory().location;
 
   
     React.useEffect(() => {
@@ -84,7 +84,7 @@ const [cars, setCars] = React.useState([]);
 
     return(
         <>
-            <NavBar location={location}></NavBar>
+            <NavBar location={location.pathname}></NavBar>
             <Container fluid >
                 <Row >
                     <Col md={4} sm={4} className="border border-dark">
