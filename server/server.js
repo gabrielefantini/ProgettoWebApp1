@@ -4,6 +4,7 @@
 const express = require('express');
 const carDao = require('./car_dao');
 const userDao = require('./user_dao');
+const rentDao = require('./rent_dao');
 const morgan = require('morgan'); // logging middleware
 const jwt = require('express-jwt');
 const jsonwebtoken = require('jsonwebtoken');
@@ -36,7 +37,7 @@ app.post('/api/login', (req, res) => {
 
         if(user === undefined) {
             res.status(404).send({
-                errors: [{ 'param': 'Server', 'msg': 'Invalid e-mail' }] 
+                errors: [{ 'param': 'Server', 'msg': 'Invalid username' }] 
               });
         } else {
             if(!userDao.checkPassword(user, password)){
@@ -66,7 +67,7 @@ app.post('/api/logout', (req, res) => {
 });
 
 
-//GET /cars/public/<filter>
+//GET /cars/public
 app.get('/api/cars/public', (req, res) => {
     carDao.getPublicCars()
         .then((cars) => {
@@ -111,6 +112,30 @@ app.get('/api/user', (req,res) => {
       );
 });
 
+
+
+//GET /rentsHistory
+app.get('/api/rentsHistory', (req, res) => {
+    const user = req.user && req.user.user;
+    rentDao.getRentByUserId(user)
+        .then((rents) => {
+            if(!rents){
+                res.status(404).send();
+            } else {
+                res.json(rents);
+            }
+        })
+        .catch((err) => {
+            res.status(500).json({
+                errors: [{'param': 'Server', 'msg': err}],
+            });
+        });
+});
+
+//GET /avaibleRents/<rentRequest>
+app.get('/api/avaibleRents/:startDate/:endDate/:category/:driverAge/:additionalDrivers/:dailyKm/:extraInsurance', (req, res) => {
+    
+});
 /*
 //GET /tasks
 app.get('/api/tasks', (req, res) => {
@@ -124,23 +149,6 @@ app.get('/api/tasks', (req, res) => {
                 errors: [{'msg': err}],
              });
        });
-});
-
-//GET /tasks/<taskId>
-app.get('/api/tasks/:taskId', (req, res) => {
-    taskDao.getTask(req.params.taskId)
-        .then((course) => {
-            if(!course){
-                res.status(404).send();
-            } else {
-                res.json(course);
-            }
-        })
-        .catch((err) => {
-            res.status(500).json({
-                errors: [{'param': 'Server', 'msg': err}],
-            });
-        });
 });
 
 //POST /tasks

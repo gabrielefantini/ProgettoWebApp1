@@ -18,6 +18,8 @@ export default function Home({cat, bran, ...rest}){
       .then((res)=>{
           setCars(res);
           setCarsToBeDisplayed(res);
+      }).catch((err) =>{
+        console.log(err); //TODO
       });
     }, [location]);
 

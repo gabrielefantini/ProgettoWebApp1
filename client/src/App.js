@@ -1,6 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Link, Route, Switch} from "react-router-dom";
-import NoMatch from './NoMatch';
+import { BrowserRouter as Router, Redirect, Route, Switch} from "react-router-dom";
 import Home from './components/Home';
 import Login from './components/Login';
 import User from './components/User/User';
@@ -50,31 +49,15 @@ function App() {
           <Route
             path="/user"
             render={(props) => (
-              <User></User>
+              <User categories={cat}></User>
             )}
           />
           <Route>
-            <NoMatch/>
+            <Redirect to="/"/>
           </Route>
         </Switch>  
       </Router>
   );
-
- 
-  //end of Login input props mokup
-
-  /*return(
-    <Login handleLogin={handleLogin}></Login>
-  );*/
-  
-  /*
-  return(
-      <>
-        <NavBar></NavBar>
-        <User ></User>
-      </>
-  );
-  */
 }
 
 export default App;

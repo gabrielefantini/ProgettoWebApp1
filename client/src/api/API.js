@@ -1,4 +1,5 @@
 import Car from './Car';
+import { Rent, RentProposal} from './Rent';
 const baseURL = "/api";
 
 
@@ -7,7 +8,6 @@ async function isAuthenticated(){
     const response = await fetch(baseURL + url);
     const userJson = await response.json();
     if(response.ok){
-        console.log(userJson);
         return userJson;
     } else {
         let err = { status: response.status, errObj: userJson};
@@ -68,6 +68,33 @@ async function getPublicCars(){
     }
 }
 
+async function getRentsHistory(){
+    let url = "/rentsHistory";
+    const response = await fetch(baseURL + url);
+    const rentsHistoryJson = await response.json();
+    if(response.ok){
+        return rentsHistoryJson.map((r) => new Rent(r.id, r.carId, r.userId, r.startDate, r.endDate, r.coast));
+    } else {
+        let err = {status: response.status, errObj: rentsHistoryJson};
+        throw err;
+    }
+}
 
-const API = { getPublicCars, userLogin, userLogout, isAuthenticated};
+async function getAvaibleRents(rentRequest) {
+    let url = "/avaibleRents/";
+    if(rentRequest){
+        url+=`${rentRequest.startDate}/${rentRequest.endDate}/${rentRequest.category}/${rentRequest.driverAge}/${rentRequest.additionalDrivers}/${rentRequest.dailyKm}/${rentRequest.extraInsurance}`;
+    }
+    const response = await fetch(baseURL + url);
+    const avaibleRentsJson = await response.json();
+    if(response.ok){
+        //return tasksJson.map((t) => Task.from(t));
+        return avaibleRentsJson.map((r) => new RentProposal(r.carID, r.userId, r.startDate, r.endDate, r.coast, r.carName, r.carBrand, r.carAvaibility));
+    } else {
+        let err = {status: response.status, errObj:avaibleRentsJson};
+        throw err;  // An object with the error coming from the server
+    }
+}
+
+const API = { getPublicCars, userLogin, userLogout, isAuthenticated, getRentsHistory, getAvaibleRents};
 export default API;

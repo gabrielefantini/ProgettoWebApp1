@@ -1,7 +1,7 @@
 import React from 'react';
 import API from '../api/API';
 import { Form, Button, Row, Col } from 'react-bootstrap';
-import { Link, Redirect, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import SecondaryWindow from '../utils/SecondaryWindow';
 import NavBar from './NavBar';
 
@@ -10,7 +10,7 @@ export default function Login(){
     const history = useHistory();
     const [username, setUsername] = React.useState("");
     const [password, setPassword] = React.useState("");
-    const [isErr, setErr] = React.useState(false);
+    const [errMsg, setErrMsg] = React.useState("");
 
     const postLogin = () => {
         API.userLogin(username, password)
@@ -18,16 +18,20 @@ export default function Login(){
             history.push({pathname:"/user"});
         })
         .catch((errorObj) => {
-            console.log(errorObj);
-            setErr(true);
+            console.log(errorObj);//TODO
+            if(errorObj.errors.length!==0)
+                setErrMsg(errorObj.errors[0].msg);
         });
     }
 
     React.useEffect(() => {
         API.isAuthenticated()
-        .then( result => {
+        .then( (user) => {
             history.push({pathname:"/user"});
         })
+        .catch((err) => {
+            console.log(err); //TODO
+        });
     }, [history]);
 
     return(
@@ -37,7 +41,7 @@ export default function Login(){
                 <Row>
                     <Col md={{span:6, offset:3}}>
                         <LoginForm username={username} password={password} handleUsername={setUsername} handlePassword={setPassword} postLogin={postLogin}></LoginForm>
-                        { isErr &&<p>Parametri sbagliati</p> }
+                        { errMsg }
                     </Col>
                 </Row>
             </SecondaryWindow>

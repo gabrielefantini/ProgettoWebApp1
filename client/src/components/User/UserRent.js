@@ -1,5 +1,7 @@
 import React from 'react';
-import { Container, Col, Row, DropdownButton, Dropdown, FormControl} from 'react-bootstrap';
+import { Container, Col, Row, DropdownButton, Dropdown, FormControl, Navbar as SecondaryNavbar, Nav} from 'react-bootstrap';
+import { useHistory } from 'react-router-dom';
+import API from '../../api/API';
 import SecondaryWindow from '../../utils/SecondaryWindow';
 import List from '../../utils/List';
 import DatePicker from 'react-datepicker';
@@ -7,13 +9,38 @@ import "react-datepicker/dist/react-datepicker.css";
 
 
 
-export default function UserRent({rentResults,...rest}){
+export default function UserRent({...rest}){
+    const filter = {
+        startDate:"11-12-2015",
+        endDate:"15-12-2015",
+        category:"A",
+        driverAge:"10-12-1997",
+        additionalDrivers: 3,
+        dailyKm: 100,
+        extraInsurance:false
+    }
+
+    const history = useHistory();
+
+    React.useEffect(()=>{
+        API.getAvaibleRents(filter)
+        .then()
+        .catch()
+    },[]);
 
     return(
-        <SecondaryWindow title="Noleggia una macchina">
-            <RentForm {...rest} />
-            <RentResults results={rentResults} />
-        </SecondaryWindow>
+        <>
+            <SecondaryNavbar bg="light" variant="light">
+                    <Nav className="mr-auto">
+                        <Nav.Link active >Noleggia</Nav.Link>
+                        <Nav.Link onClick={()=> history.push("/user/history")} >Storico Noleggi</Nav.Link>
+                    </Nav>
+            </SecondaryNavbar>
+            <SecondaryWindow title="Noleggia una macchina">
+                <RentForm {...rest} />
+                <RentResults results={[]} />
+            </SecondaryWindow>
+        </>
     );
 }
 
@@ -38,7 +65,7 @@ function RentForm({startDate,endDate,birthDate,category,distance,categories,
                     <DropdownButton id="dropdown-item-button" title={category}>
                         {categories? (
                             categories.map((category, index) => (
-                            <Dropdown.Item key={index} as="button" onClick={()=> setCategory(category)} >{category}</Dropdown.Item>))
+                            <Dropdown.Item key={index} as="button" onClick={()=> setCategory(category)} >{category.name}</Dropdown.Item>))
                             ) : (<p>categories not found</p>)
                         }
                     </DropdownButton>
@@ -52,7 +79,7 @@ function RentForm({startDate,endDate,birthDate,category,distance,categories,
             </Row>
             <Row>
                 <Col>
-                    <p>Km che si desidera percorrere durante il noleggio</p>
+                    <p>Percorrenza giornaliera stimata (in Km)</p>
                     <FormControl value={distance} onChange={(e)=>setDistance(e.target.value)}/>
                 </Col>
             </Row>
