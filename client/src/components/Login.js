@@ -8,6 +8,7 @@ import NavBar from './NavBar';
 export default function Login(){
     
     const history = useHistory();
+    
     const [username, setUsername] = React.useState("");
     const [password, setPassword] = React.useState("");
     const [errMsg, setErrMsg] = React.useState("");
@@ -34,13 +35,22 @@ export default function Login(){
         });
     }, [history]);
 
+    const handleUsername = (value) => {
+        setUsername(value);
+        setPassword(password);
+    }
+    const handlePassword = (value) => {
+        setUsername(username);
+        setPassword(value);
+    }
+
     return(
         <>
             <NavBar location={"/login"}></NavBar>
             <SecondaryWindow title="Login">
                 <Row>
                     <Col md={{span:6, offset:3}}>
-                        <LoginForm username={username} password={password} handleUsername={setUsername} handlePassword={setPassword} postLogin={postLogin}></LoginForm>
+                        <LoginForm username={username} password={password} handleUsername={handleUsername} handlePassword={handlePassword} postLogin={postLogin}></LoginForm>
                         { errMsg }
                     </Col>
                 </Row>

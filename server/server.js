@@ -5,6 +5,7 @@ const express = require('express');
 const carDao = require('./car_dao');
 const userDao = require('./user_dao');
 const rentDao = require('./rent_dao');
+const calculatePrice = require('./coastCalculator');
 const morgan = require('morgan'); // logging middleware
 const jwt = require('express-jwt');
 const jsonwebtoken = require('jsonwebtoken');
@@ -132,67 +133,19 @@ app.get('/api/rentsHistory', (req, res) => {
         });
 });
 
-//GET /avaibleRents/<rentRequest>
-app.get('/api/avaibleRents/:startDate/:endDate/:category/:driverAge/:additionalDrivers/:dailyKm/:extraInsurance', (req, res) => {
-    
-});
-/*
-//GET /tasks
-app.get('/api/tasks', (req, res) => {
+//GET /rentProposal/<rentRequest>
+app.get('/api/rentProposal/:startDate/:endDate/:category/:driverAge/:additionalDrivers/:dailyKm/:extraInsurance', (req, res) => {
     const user = req.user && req.user.user;
-    taskDao.getTasks(user, req.query.filter)
-        .then((tasks) => {
-            res.json(tasks);
-        })
-        .catch((err) => {
-            res.status(500).json({
-                errors: [{'msg': err}],
-             });
-       });
+    const options = {...req.params};
+    calculatePrice(user,options)
+    .then(val => res.json(val))
+    .catch((err) => {
+        res.status(500).json({
+            errors:[{'param': 'Server', 'msg': err}],
+        });
+    });
 });
 
-//POST /tasks
-app.post('/api/tasks', (req,res) => {
-    const task = req.body;
-    if(!task){
-        res.status(400).end();
-    } else {
-        const user = req.user && req.user.user;
-        task.user = user;
-        taskDao.createTask(task)
-            .then((id) => res.status(201).json({"id" : id}))
-            .catch((err) => {
-                res.status(500).json({errors: [{'param': 'Server', 'msg': err}],})
-            });
-    }
-});
-
-//DELETE /tasks/<taskId>
-app.delete('/api/tasks/:taskId', (req,res) => {
-    taskDao.deleteTask(req.params.taskId)
-        .then((result) => res.status(204).end())
-        .catch((err) => res.status(500).json({
-            errors: [{'param': 'Server', 'msg': err}],
-        }));
-});
-
-//PUT /tasks/<taskId>
-app.put('/api/tasks/:taskId', (req,res) => {
-    if(!req.body.id){
-        res.status(400).end();
-    } else {
-        const task = req.body;
-        const user = req.user && req.user.user;
-        task.user = user;
-        taskDao.updateTask(req.params.taskId,task)
-            .then((result) => res.status(200).end())
-            .catch((err) => res.status(500).json({
-                errors: [{'param': 'Server', 'msg': err}],
-            }));
-    }
-});
-
-*/
 
 //activate server
 app.listen(port, () => console.log('Server ready'));

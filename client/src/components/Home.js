@@ -33,21 +33,24 @@ export default function Home({cat, bran, ...rest}){
   const handleCategories = (name, isChecked) => {
     let x = [...categories];
     x.map((el) => {
-      if(el.name === name) 
-        el.isChecked = !isChecked;
+        if(el.name === name) 
+          el.isChecked = !isChecked;
+        return el;
       });
     
     setCategories(x);
+    setBrands(brands);
     filterCars();
   }
   //cosa succede se viene selezionato un filtro tipo marca
   const handleBrands = (name, isChecked) => {
     let x = [...brands];
     x.map((el) => {
-      if(el.name === name) 
-        el.isChecked = !isChecked;
-      });
-
+        if(el.name === name) 
+          el.isChecked = !isChecked;
+        return el;
+    });
+    setCategories(categories);
     setBrands(x);
     filterCars();
   }
@@ -60,13 +63,15 @@ export default function Home({cat, bran, ...rest}){
     categories.map((cat) => {
       if(cat.isChecked)
         selectedCategories.push(cat.name)
-      });
+      return cat;
+    });
 
     let selectedBrands = [];
     brands.map((bran) => {
       if(bran.isChecked)
         selectedBrands.push(bran.name)
-      });
+      return bran;
+    });
     
     let selectedCars = cars;
 
@@ -99,7 +104,7 @@ export default function Home({cat, bran, ...rest}){
                     </Col>
                     <Col md={8} sm={8} >
                         <SecondaryWindow title={"Risultati Ricerca"} >
-                            <List listElements={carsToBeDisplayed}/>
+                            <List cars={carsToBeDisplayed}/>
                         </SecondaryWindow>
                     </Col>
                 </Row>

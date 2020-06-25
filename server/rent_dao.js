@@ -4,7 +4,7 @@ const Rent = require('./rent');
 const db = require('./db');
 
 const createRent = (row) => {
-    return new Rent(row.id, row.carId, row.userId, row.startDate, row.endDate, row.coast);
+    return new Rent(row.id, row.userId, row.carId, row.startDate, row.endDate, row.coast);
 }
 
 /**
@@ -20,6 +20,19 @@ exports.getRentByUserId = (userId) => {
             } else {
                 let rents = rows.map((row) => createRent(row));
                 resolve(rents);
+            }
+        });
+    });
+}
+
+exports.getRentNumberByUserId = (userId) => {
+    return new Promise((resolve, reject) => {
+        const sql = `SELECT COUNT (id) AS rents FROM rent WHERE userId = ?`;
+        db.all(sql, [userId], (err, rows) => {
+            if(err){
+                reject(err);
+            } else {
+                resolve(rows[0].rents);
             }
         });
     });

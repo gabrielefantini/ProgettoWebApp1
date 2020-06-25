@@ -1,9 +1,7 @@
 class Rent{
-    constructor(id, carId, userId, startDate, endDate, coast){
-        if(id)
-            this.id = id;
-        
-        this.carId = carId;
+    constructor(id, userId, carId, startDate, endDate, coast){
+        this.id = id;
+        this.carId=carId;
         this.userId = userId;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -12,14 +10,8 @@ class Rent{
 
 }
 class RentProposal{
-    constructor(carId, userId, startDate, endDate, coast, carName, carBrand, carAvaibility){
-        this.carId = carId;
-        this.userId = userId;
-        this.carName = carName;
-        this.carBrand = carBrand;
-        this.carAvaibility = carAvaibility;
-        this.startDate = startDate;
-        this.endDate = endDate;
+    constructor(coast, availability){
+        this.availability = availability;
         this.coast = coast;
     }
 

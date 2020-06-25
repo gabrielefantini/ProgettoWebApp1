@@ -1,35 +1,24 @@
 import React from 'react';
 import { Card, Row, Col} from 'react-bootstrap';
-import Payment from './Payment';
 
-export default function List({listElements,...rest}){
+export default function List({cars, ...rest}){
     return(
         <Row>
-            {listElements? ( 
-                listElements.map((element, index) => (
+            {cars? ( 
+                cars.map((element, index) => (
                     <Col md={6} lg={4} xl={2}  key={index}>
-                        <ListElement {...element} {...rest}/>
-                    </Col>))
-                ):(<p>no element found</p>)
-            }
+                        <ListElement car={element} {...rest}/>
+                    </Col>))):(<p>no element found</p>)}
         </Row>
     );
 }
 
-function ListElement({brand, name, coast, ...rest}){
+function ListElement({car, ...rest}){
     return(
         <Card>
             <Card.Body>
-            <Card.Subtitle className="mb-2 text-muted">{brand}</Card.Subtitle>
-            <Card.Title>{name}</Card.Title>
-            {coast? (
-                <div>
-                    <Card.Text>
-                ‎       €{coast}
-                    </Card.Text>
-                    <Payment coast={coast} brand={brand} name={name} {...rest} />
-                </div>
-            ):(<div></div>)}
+                <Card.Subtitle className="mb-2 text-muted">{car.brand}</Card.Subtitle>
+                <Card.Title>{car.name}</Card.Title>
             </Card.Body>
         </Card>
     );

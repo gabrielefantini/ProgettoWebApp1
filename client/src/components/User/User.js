@@ -8,13 +8,6 @@ import UserRentHistory from './UserRentHistory';
 
 export default function User({...rest}){
     const [username, setUsername] = React.useState("");
-    /*
-    const [startDate, setStartDate] = React.useState(new Date());
-    const [endDate, setEndDate] = React.useState(new Date());
-    const [birthDate, setBirthDate] = React.useState(new Date());
-    const [category, setCategory] = React.useState("ScegliCategoria");
-    const [distance, setDistance] = React.useState(0);
-    */
    
     const history = useHistory();
   

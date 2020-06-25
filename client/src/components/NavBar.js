@@ -3,7 +3,7 @@ import { Navbar, Button} from 'react-bootstrap';
 import API from '../api/API';
 import { Link, useHistory } from 'react-router-dom';
 
-export default function NavBar({username, logout, location, ...rest}){
+export default function NavBar({username, location, ...rest}){
     const history = useHistory();
 
     const handleLogout = (event) => {
@@ -35,10 +35,11 @@ export default function NavBar({username, logout, location, ...rest}){
                         </Navbar.Text>
                         <Button variant="danger" onClick={(event) => handleLogout(event)}>Logout</Button>
                     </>
-                ):(location==="/"?(
-                    <Link to="/login">
-                        <Button>Login</Button>
-                    </Link>):(<div></div>))}
+                    ):(location==="/"?(
+                                        <Link to="/login">
+                                            <Button>Login</Button>
+                                        </Link>):(
+                                                    <div></div>))}
             </Navbar.Collapse>
         </Navbar>
     );
