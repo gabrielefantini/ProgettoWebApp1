@@ -4,10 +4,7 @@ const User = require('./user');
 const db = require('./db');
 const bcrypt = require('bcrypt');
 
-/**
- * Function to create a User object from a row of the users table
- * @param {*} row a row of the users table
- */
+
 const createUser = function (row) {
     const id = row.id;
     const username = row.username;

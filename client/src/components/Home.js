@@ -10,7 +10,7 @@ import "./Home.css";
 export default function Home({cat, bran, ...rest}){
 
   const [cars, setCars] = React.useState([]);
-  const location = useHistory().location;
+  const history = useHistory();
 
   
     React.useEffect(() => {
@@ -19,9 +19,9 @@ export default function Home({cat, bran, ...rest}){
           setCars(res);
           setCarsToBeDisplayed(res);
       }).catch((err) =>{
-        console.log(err); //TODO
+        console.log(err);
       });
-    }, [location]);
+    }, [history]);
 
 
   //gestione delle macchine mostrate sulla home
@@ -73,7 +73,7 @@ export default function Home({cat, bran, ...rest}){
       return bran;
     });
     
-    let selectedCars = cars;
+    let selectedCars = [...cars];
 
     if(selectedCategories.length !== 0){
       selectedCars = selectedCars.filter((car) => {
@@ -91,15 +91,18 @@ export default function Home({cat, bran, ...rest}){
 
     return(
         <>
-            <NavBar location={location.pathname}></NavBar>
+            <NavBar location={"/"}></NavBar>
             <Container fluid >
                 <Row >
                     <Col md={4} sm={4} className="border border-dark">
                             <SecondaryWindow title={"Filtri"}>
+                                <br></br>
                                 <MainFilter name="Categoria" secondaryFilters={categories} handleCheck={handleCategories}>
                                 </MainFilter>
+                                <br></br>
                                 <MainFilter name="Marca" secondaryFilters={brands} handleCheck={handleBrands}>
                                 </MainFilter>
+                                <br></br>
                             </SecondaryWindow>
                     </Col>
                     <Col md={8} sm={8} >
@@ -121,6 +124,7 @@ function MainFilter({name, secondaryFilters, ...rest}){
        <Row>
            <Col md={12}>
                 <Button 
+                    block
                     onClick={() => setOpen(!open)}
                     aria-controls="filters"
                     aria-expanded={open}>

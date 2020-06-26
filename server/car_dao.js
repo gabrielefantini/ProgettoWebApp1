@@ -55,12 +55,10 @@ exports.getOneAvailableCar = (start, end, category) => {
             if (err) 
                 reject(err);
             else if (rows.length === 0){
-                console.log("not found");
-                resolve(undefined);
+                reject("No cars found");
             }
             else{
                 const car = createCar(rows[0]);
-                console.log(car);
                 resolve(car);
             }
         });
@@ -75,7 +73,7 @@ exports.getAllCarsNumberByCategory = (category) => {
             if(err){
                 reject(err);
             } else {
-                resolve(rows[0].availability);
+                resolve(rows[0].availability); //Ritorana sempre una riga soltanto, anche se il risultato è 0
             }
         });
     });

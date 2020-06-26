@@ -92,7 +92,7 @@ async function getRentProposal(rentRequest) {
         return new RentProposal(proposalJson.startDate, proposalJson.endDate, proposalJson.coast, proposalJson.availability, proposalJson.category);
     } else {
         let err = {status: response.status, errObj:proposalJson};
-        throw err;  // An object with the error coming from the server
+        throw err; 
     }
 }
 
@@ -135,5 +135,5 @@ async function deleteRent(rentId) {
 }
 
 
-const API = { getPublicCars, userLogin, userLogout, isAuthenticated, getRentsHistory, getRentProposal, payment, deleteRent};
+const API = { getPublicCars, userLogin, userLogout, isAuthenticated, getRentsHistory, getRentProposal, payment, deleteRent };
 export default API;

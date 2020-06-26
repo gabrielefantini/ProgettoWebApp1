@@ -7,6 +7,8 @@ import './App.css';
 
 
 function App() {
+
+  //categorie e marchi disponibili
   const cat=[
       {name:"A", isChecked:false},
       {name:"B", isChecked:false},
@@ -20,16 +22,6 @@ function App() {
       {name:"Ferrari", isChecked:false},
       {name:"Lamborghini", isChecked:false}
     ];
-  /*
-  const ca=[
-    {brand:"fiat", name:"punto", category:"A"},
-    {brand:"audi", name:"panda", category:"A"},
-    {brand:"fiat", name:"punto", category:"B"},
-    {brand:"audi", name:"panda", category:"A"},
-    {brand:"fiat", name:"punto", category:"B"},
-    {brand:"lamborghini", name:"panda", category:"A"}
-  ];
-  */
 
   return (
       <Router>

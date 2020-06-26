@@ -44,7 +44,6 @@ exports.createRent = (userId, carId, startDate, endDate, coast) => {
                 console.log(err);
                 reject(err);
             } else {
-                console.log(row);
                 resolve(row);
             }
         })
