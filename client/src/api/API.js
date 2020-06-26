@@ -88,7 +88,7 @@ async function getRentProposal(rentRequest) {
     const response = await fetch(baseURL + url);
     const proposalJson = await response.json();
     if(response.ok){
-        //return tasksJson.map((t) => Task.from(t));
+        console.log(proposalJson);
         return new RentProposal(proposalJson.startDate, proposalJson.endDate, proposalJson.coast, proposalJson.availability, proposalJson.category);
     } else {
         let err = {status: response.status, errObj:proposalJson};

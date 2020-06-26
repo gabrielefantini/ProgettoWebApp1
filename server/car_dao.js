@@ -29,7 +29,7 @@ exports.getAvailableCarsNumber = (start, end, category) => {
                     WHERE id NOT IN (SELECT carId FROM rent WHERE
                                                                 (? <= startDate AND startDate <= ?) OR
                                                                 (? <= endDate AND endDate <= ?) OR
-                                                                (endDate <= ? AND startDate >= ?)
+                                                                (startDate <= ? AND ? <= endDate)
                                     )
                     AND category = ?` //tutti quelli che iniziano nell'intervallo, tutti quelli che finiscono nell'intervallo, tutti quelli che comprendono l'intervallo
         db.all(sql, [start, end, start, end, start, end, category], (err, rows)=>{
@@ -48,7 +48,7 @@ exports.getOneAvailableCar = (start, end, category) => {
                     WHERE id NOT IN (SELECT carId FROM rent WHERE 
                                                                 (? <= startDate AND startDate <= ?) OR
                                                                 (? <= endDate AND endDate <= ?) OR
-                                                                (endDate <= ? AND startDate >= ?)
+                                                                (startDate <= ? AND ? <= endDate)
                                     )
                     AND category = ?`  //tutti quelli che iniziano nell'intervallo, tutti quelli che finiscono nell'intervallo, tutti quelli che comprendono l'intervallo
         db.all(sql, [start, end, start, end, start, end, category], (err, rows)=>{

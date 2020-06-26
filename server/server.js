@@ -147,7 +147,9 @@ app.get('/api/rentProposal/:startDate/:endDate/:category/:driverAge/:additionalD
     const user = req.user && req.user.user;
     const options = {...req.params};
     calculatePrice(user,options)
-    .then(val => res.json(val))
+    .then(val => {
+        res.json(val);
+    })
     .catch((err) => {
         res.status(500).json({
             errors:[{'param': 'Server', 'msg': err}],
@@ -196,6 +198,7 @@ app.post('/api/payments', (req,res) => {
                     rent.carId = car.id;
                     
                     console.log(car);
+                    console.log(rent);
                     //aggiungo un noleggio al database
                     rentDao.createRent(rent.userId, rent.carId, rent.startDate, rent.endDate, rent.coast)
                     .then((id) => res.status(201).json({"id" : id}))

@@ -8,8 +8,8 @@ async function calculatePrice(user, options){
         let coast = 0;
         if(options.startDate && options.endDate && options.category && options.dailyKm && options.driverAge && options.additionalDrivers && options.extraInsurance){
             //0---> Definisco la durata del noleggio in giorni così da non dover rifare i calcoli
-            const startDate = moment(options.startDate , 'YYYY-MM-DD 00:00:00');
-            const endDate = moment(options.endDate , 'YYYY-MM-DD 00:00:00');
+            const startDate = moment(options.startDate , 'YYYY-MM-DD');
+            const endDate = moment(options.endDate , 'YYYY-MM-DD');
             const days = moment.duration(endDate.diff(startDate)).asDays();
             //1---> trovo tutte le macchine disponibili per quella data
             const carsAvailable = await carDao.getAvailableCarsNumber(options.startDate, options.endDate, options.category);
@@ -41,7 +41,7 @@ async function calculatePrice(user, options){
             if(options.dailyKm>=150)
                 coast = coast * 1.05;               
             //3c--->costo in base all'età del guidatore
-            const driverBirth = moment(options.driverAge, 'YYYY-MM-DD 00:00:00');
+            const driverBirth = moment(options.driverAge, 'YYYY-MM-DD');
             const current = moment();
             const driverAge = parseInt(moment.duration(current.diff(driverBirth)).asYears());
 
@@ -66,7 +66,7 @@ async function calculatePrice(user, options){
                 coast = coast * 0.90;
             //Infine restituisco il preventivo
             coast = parseInt(coast);
-            const rentProposal = { startDate: startDate, endDate: endDate, coast: coast, availability: carsAvailable, category: options.category};
+            const rentProposal = { startDate: options.startDate, endDate: options.endDate, coast: coast, availability: carsAvailable, category: options.category};
             return(rentProposal);
         } else {
             return(err);

@@ -31,7 +31,7 @@ export default function UserRent({...rest}){
     const [dailyKm, setDailyKm] = React.useState("20");
     const [extraInsurance, setExtraInsurance] = React.useState(false);
     
-    const [rentProposal, setRentProposal] = React.useState({});
+    const [rentProposal, setRentProposal] = React.useState([]);
 
     const history = useHistory();
 
@@ -58,12 +58,15 @@ export default function UserRent({...rest}){
 
     React.useEffect(()=>{
         //converto le date affinchè siano compatibili con il formato usato su sqlite3
-        const newStartDate = moment(startDate).format('YYYY-MM-DD 00:00:00');
-        const newEndDate = moment(endDate).format('YYYY-MM-DD 00:00:00');
-        const newDriverAge = moment(driverAge).format('YYYY-MM-DD 00:00:00');
+        const newStartDate = moment(startDate).format('YYYY-MM-DD');
+        const newEndDate = moment(endDate).format('YYYY-MM-DD');
+        const newDriverAge = moment(driverAge).format('YYYY-MM-DD');
         if(startDate && endDate && category && driverAge && additionalDrivers && dailyKm){
             API.getRentProposal({startDate:newStartDate, endDate:newEndDate, category, driverAge:newDriverAge, additionalDrivers, dailyKm, extraInsurance})
-            .then((res) => {setRentProposal(res); console.log(res);})
+            .then((res) => {
+                console.log(res);
+                setRentProposal(res);
+            })
             .catch((err)=> {
                             if(err.status === 401)
                                 history.push('/login');
