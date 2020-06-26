@@ -6,13 +6,14 @@ const carDao = require('./car_dao');
 const userDao = require('./user_dao');
 const rentDao = require('./rent_dao');
 const calculatePrice = require('./coastCalculator');
+const paymentS = require('./payment');
 const morgan = require('morgan'); // logging middleware
 const jwt = require('express-jwt');
 const jsonwebtoken = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 
 const jwtSecret = '6xvL4xkAAbG49hcXf5GIYSvkDICiUAR6EdR5dLdwW7hMzUjjMUe9t6M5kSAYxsvX';
-const expireTime = 400; //seconds
+const expireTime = 400000; //seconds
 
 // Authorization error
 const authErrorObj = { errors: [{  'param': 'Server', 'msg': 'Authorization error' }] };
@@ -146,6 +147,55 @@ app.get('/api/rentProposal/:startDate/:endDate/:category/:driverAge/:additionalD
     });
 });
 
+//POST /payments
+/**
+ * body ---> {
+ *              cardHolder,
+ *              cardNumber,
+ *              cardCvv,
+ *              rentProposal:{
+ *                  startDate:
+ *                  endDate:
+ *                  availability:
+ *                  category:
+ *                  coast:
+ *              }
+ *  }
+ * 
+ * N.B. è possibile firmare una proposta di noleggio dal server così che il costo non possa essere alterato dal client 
+ */
+
+app.post('/api/payments', (req,res) => {
+    const paymentRequest = req.body;
+    if(!paymentRequest){
+        res.status(400).end();
+    } else {
+        const user = req.user && req.user.user;
+        paymentS.payment(paymentRequest.cardHolder, paymentRequest.cardNumber, paymentRequest.cardCvv, paymentRequest.rentProposal.coast)
+        .then((answer) => {
+            if(answer === 'YES'){
+                console.log("fffffffffffff");
+
+                const user = req.user && req.user.user;
+                let rent = {...paymentRequest.rentProposal};
+                rent.userId = user;
+                
+                carDao.getOneAvailableCar(rent.startDate, rent.endDate, rent.category)
+                .then((car) =>{
+                    rent.carId = car.id;
+                    
+                    console.log(car);
+                    rentDao.createRent(rent.userId, rent.carId, rent.startDate, rent.endDate, rent.coast)
+                    .then((id) => res.status(201).json({"id" : id}))
+                    .catch((err) => {});
+                })
+                .catch((err) => {
+                });
+            } else {}
+        })
+        .catch((err) => {})
+    }
+});
 
 //activate server
 app.listen(port, () => console.log('Server ready'));

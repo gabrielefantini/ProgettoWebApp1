@@ -25,14 +25,40 @@ exports.getPublicCars = () => {
 
 exports.getAvailableCarsNumber = (start, end, category) => {
     return new Promise((resolve, reject) => {
-        const sql = `SElECT COUNT (id) AS availability FROM car 
-                    WHERE id NOT IN (SELECT carId FROM rent WHERE (startDate >= ? AND startDate <=?) OR (endDate >= ? AND endDate <= ?))
-                    AND category = ?` //tutti quelli che iniziano nell'intervallo e tutti quelli che finiscono nell'intervallo
-        db.all(sql, [start, end, start, end, category], (err, rows)=>{
+        const sql = `SELECT COUNT (id) AS availability FROM car 
+                    WHERE id NOT IN (SELECT carId FROM rent WHERE
+                                                                (? <= startDate AND startDate <= ?) OR
+                                                                (? <= endDate AND endDate <= ?) OR
+                                                                (endDate <= ? AND startDate >= ?)
+                                    )
+                    AND category = ?` //tutti quelli che iniziano nell'intervallo, tutti quelli che finiscono nell'intervallo, tutti quelli che comprendono l'intervallo
+        db.all(sql, [start, end, start, end, start, end, category], (err, rows)=>{
             if(err){
                 reject(err);
             } else {
                 resolve(rows[0].availability); //deve ritornare per forza una riga!
+            }
+        });
+    });
+}
+
+exports.getOneAvailableCar = (start, end, category) => {
+    return new Promise((resolve, reject) => {
+        const sql = `SELECT * FROM car 
+                    WHERE id NOT IN (SELECT carId FROM rent WHERE 
+                                                                (? <= startDate AND startDate <= ?) OR
+                                                                (? <= endDate AND endDate <= ?) OR
+                                                                (endDate <= ? AND startDate >= ?)
+                                    )
+                    AND category = ?`  //tutti quelli che iniziano nell'intervallo, tutti quelli che finiscono nell'intervallo, tutti quelli che comprendono l'intervallo
+        db.all(sql, [start, end, start, end, category], (err, rows)=>{
+            if (err) 
+                reject(err);
+            else if (rows.length === 0)
+                resolve(undefined);
+            else{
+                const car = createCar(rows[0]);
+                resolve(car);
             }
         });
     });

@@ -7,9 +7,6 @@ const createRent = (row) => {
     return new Rent(row.id, row.userId, row.carId, row.startDate, row.endDate, row.coast);
 }
 
-/**
- * Get all rent by userId
- */
 
 exports.getRentByUserId = (userId) => {
     return new Promise((resolve, reject) => {
@@ -35,5 +32,21 @@ exports.getRentNumberByUserId = (userId) => {
                 resolve(rows[0].rents);
             }
         });
+    });
+}
+
+exports.createRent = (userId, carId, startDate, endDate, coast) => {
+    return new Promise((resolve, reject) => {
+        console.log("DIoostronzooo");
+        const sql = `INSERT INTO rent (userId, carId, startDate, endDate, coast)
+                            VALUES (?,?,?,?,?)`;
+        db.all(sql, [userId, carId, startDate, endDate, coast], (err, row) => {
+            if(err){
+                reject(err);
+            } else {
+                console.log(row);
+                resolve(row);
+            }
+        })
     });
 }

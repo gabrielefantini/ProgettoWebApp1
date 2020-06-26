@@ -10,9 +10,12 @@ class Rent{
 
 }
 class RentProposal{
-    constructor(coast, availability){
+    constructor(startDate, endDate, coast, availability, category){
+        this.startDate = startDate;
+        this.endDate = endDate;
         this.availability = availability;
         this.coast = coast;
+        this.category = category;
     }
 
 }

@@ -1,9 +1,10 @@
 import React from 'react';
-import { Container, Col, Row, DropdownButton, Dropdown, FormControl, Navbar as SecondaryNavbar, Nav, Form} from 'react-bootstrap';
+import { Container, Col, Row, DropdownButton, Dropdown, Navbar as SecondaryNavbar, Nav, Form} from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import moment from 'moment';
 import API from '../../api/API';
 import SecondaryWindow from '../../utils/SecondaryWindow';
+import Payment from '../../utils/Payment';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -23,11 +24,11 @@ export default function UserRent({...rest}){
     */
 
     const [startDate, setStartDate] = React.useState(new Date());
-    const [endDate, setEndDate] = React.useState(new Date());
+    const [endDate, setEndDate] = React.useState();
     const [category, setCategory] = React.useState("ScegliCategoria");
-    const [driverAge, setDriverAge] = React.useState(new Date());
-    const [additionalDrivers, setAdditionalDrivers] = React.useState("");
-    const [dailyKm, setDailyKm] = React.useState("");
+    const [driverAge, setDriverAge] = React.useState();
+    const [additionalDrivers, setAdditionalDrivers] = React.useState("0");
+    const [dailyKm, setDailyKm] = React.useState("20");
     const [extraInsurance, setExtraInsurance] = React.useState(false);
     
     const [rentProposal, setRentProposal] = React.useState({});
@@ -62,9 +63,14 @@ export default function UserRent({...rest}){
         const newDriverAge = moment(driverAge).format('YYYY-MM-DD 00:00:00');
         console.log(newDriverAge);
         API.getRentProposal({startDate:newStartDate, endDate:newEndDate, category, driverAge:newDriverAge, additionalDrivers, dailyKm, extraInsurance})
-        .then((res) => setRentProposal(res))
-        .catch((err)=> console.log(err));//TODO
-    },[startDate, endDate, category, driverAge, additionalDrivers, dailyKm, extraInsurance]);
+        .then((res) => {setRentProposal(res); console.log(res);})
+        .catch((err)=> {
+            if(err.status === 401)
+                history.push('/login');
+            else 
+                console.log(err);
+        });//TODO
+    },[startDate, endDate, category, driverAge, additionalDrivers, dailyKm, extraInsurance, history]);
 
     return(
         <>
@@ -76,7 +82,7 @@ export default function UserRent({...rest}){
             </SecondaryNavbar>
             <SecondaryWindow title="Noleggia una macchina">
                 <RentForm handleForm={handleForm} {...formValues} {...rest} />
-                <RentResult result={rentProposal} />
+                <RentResult rentProposal={rentProposal} />
             </SecondaryWindow>
         </>
     );
@@ -90,42 +96,89 @@ function RentForm({handleForm, categories,
         <Container>
             <Row>
                 <Col>
-                    <p>Data di inizio noleggio</p>
-                    <DatePicker selected={startDate} onChange={date => handleForm({startDate:date})}/>
+                    <Form>
+                        <Form.Group>
+                            <Form.Label>Data di inizio noleggio</Form.Label>
+                            <DatePicker
+                                selected={startDate} 
+                                minDate={new Date()}
+                                maxDate={endDate}
+                                onChange={date => handleForm({startDate:date})}/>
+                        </Form.Group>  
+                    </Form>
                 </Col>
                 <Col>
-                    <p>Data di fine noleggio</p>
-                    <DatePicker selected={endDate} onChange={date => handleForm({endDate:date})} />
-                </Col>
-            </Row>
-            <Row>
-                <Col>
-                    <p>Scegli una categoria di auto</p>
-                    <DropdownButton id="dropdown-item-button" title={category}>
-                        {categories? (
-                            categories.map((el, index) => (
-                            <Dropdown.Item key={index} as="button" onClick={()=> handleForm({category:el.name})} >{el.name}</Dropdown.Item>))
-                            ) : (<p>categories not found</p>)
-                        }
-                    </DropdownButton>
-                </Col>
-            </Row>
-            <Row>
-                <Col>
-                    <p>Data di nascita del conducente</p>
-                    <DatePicker selected={driverAge} onChange={date => handleForm({driverAge: date})} />
+                    <Form>
+                        <Form.Group>
+                            <Form.Label>Data di fine noleggio</Form.Label>
+                            <DatePicker 
+                                selected={endDate}
+                                minDate={startDate}
+                                onChange={date => handleForm({endDate:date})} />
+                        </Form.Group>
+                    </Form>
                 </Col>
             </Row>
             <Row>
                 <Col>
-                    <p>Guidatori aggiuntivi</p>
-                    <FormControl value={additionalDrivers} onChange={(e)=>handleForm({additionalDrivers:e.target.value})}/>
+                    <Form>
+                        <Form.Group>
+                            <Form.Label>Scegli una categoria di auto</Form.Label>
+                            <DropdownButton id="dropdown-categories" title={category}>
+                                {categories? (
+                                    categories.map((el, index) => (
+                                    <Dropdown.Item key={index} as="category" onClick={()=> handleForm({category:el.name})} >{el.name}</Dropdown.Item>))
+                                    ) : (<p>categories not found</p>)
+                                }
+                            </DropdownButton>
+                        </Form.Group>
+                    </Form>
                 </Col>
             </Row>
             <Row>
                 <Col>
-                    <p>Percorrenza giornaliera stimata (in Km)</p>
-                    <FormControl value={dailyKm} onChange={(e)=>handleForm({dailyKm: e.target.value})}/>
+                    <Form>
+                        <Form.Group>
+                        <Form.Label>Data di nascita del conducente</Form.Label>
+                        <DatePicker 
+                            selected={driverAge}
+                            maxDate={new Date().setFullYear(new Date().getFullYear() - 18)}
+                            onChange={date => handleForm({driverAge: date})} />
+                        </Form.Group>
+                    </Form>
+                </Col>
+            </Row>
+            <Row>
+                <Col>
+                    <Form>
+                        <Form.Group>
+                            <Form.Label>Guidatori Aggiuntivi</Form.Label>
+                            <DropdownButton 
+                                id="dropdown-drivers" 
+                                title={additionalDrivers==='0'? '0' : 'almeno 1'}>
+                                    <Dropdown.Item as="driver" onClick={()=> handleForm({additionalDrivers:'0'})}>0</Dropdown.Item>
+                                    <Dropdown.Item as="driver" onClick={()=> handleForm({additionalDrivers:'1'})}>almeno 1</Dropdown.Item>
+                            </DropdownButton>
+                        </Form.Group>
+                    </Form>
+                </Col>
+            </Row>
+            <Row>
+                <Col>
+                    <Form>
+                        <Form.Group>
+                            <Form.Label>Percorrenza Giornaliera Stimata</Form.Label>
+                            <DropdownButton 
+                                id="dropdown-dailyKm" 
+                                title={dailyKm==='20'?('Inferiore a 50Km'):(
+                                        dailyKm==='100'?('Tra 50Km e 150Km'):('Superiore a 150Km'))
+                                        }>
+                                    <Dropdown.Item as="daylyKm" onClick={()=> handleForm({dailyKm:'20'})}>Inferiore a 50Km</Dropdown.Item>
+                                    <Dropdown.Item as="daylyKm" onClick={()=> handleForm({dailyKm:'100'})}>Tra 50Km e 150Km</Dropdown.Item>
+                                    <Dropdown.Item as="daylyKm" onClick={()=> handleForm({dailyKm:'200'})}>Superiore a 150Km</Dropdown.Item>
+                            </DropdownButton>
+                        </Form.Group>
+                    </Form>
                 </Col>
             </Row>
             <Row>
@@ -139,10 +192,16 @@ function RentForm({handleForm, categories,
         );
 }
 
-function RentResult({result,...rest}){ //TODO va modificata!!!!!!!!!!!!!!!!!!!!!
+function RentResult({rentProposal, ...rest}){ //TODO va modificata!!!!!!!!!!!!!!!!!!!!!
     return(
-        <Row>
-            {result.coast}
+        <Row className="border border-dark">
+            <Col>
+                <p>Costo: €{rentProposal.coast}</p> <br></br>
+                <p>Disponibilità: {rentProposal.availability}</p>
+            </Col>
+            <Col>
+                <Payment {...rentProposal}></Payment>
+            </Col>
         </Row>
     );
 }

@@ -65,7 +65,8 @@ async function calculatePrice(user, options){
             if(rentsNumber>=3)
                 coast = coast * 0.90;
             //Infine restituisco il preventivo
-            const rentProposal = { coast: coast, availability: carsAvailable};
+            coast = parseInt(coast);
+            const rentProposal = { startDate: startDate, endDate: endDate, coast: coast, availability: carsAvailable, category: options.category};
             return(rentProposal);
         } else {
             return(err);

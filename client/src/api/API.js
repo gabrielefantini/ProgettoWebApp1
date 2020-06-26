@@ -89,12 +89,33 @@ async function getRentProposal(rentRequest) {
     const proposalJson = await response.json();
     if(response.ok){
         //return tasksJson.map((t) => Task.from(t));
-        return new RentProposal(proposalJson.coast, proposalJson.availability);
+        return new RentProposal(proposalJson.startDate, proposalJson.endDate, proposalJson.coast, proposalJson.availability, proposalJson.category);
     } else {
         let err = {status: response.status, errObj:proposalJson};
         throw err;  // An object with the error coming from the server
     }
 }
 
-const API = { getPublicCars, userLogin, userLogout, isAuthenticated, getRentsHistory, getRentProposal};
+async function payment (paymentRequest){
+    return new Promise((resolve, reject) => {
+        fetch(baseURL + "/payments", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(paymentRequest),
+        }).then( (response) => {
+            if(response.ok) {
+                resolve("DONE");
+            } else {
+                // analyze the cause of error
+                response.json()
+                .then( (obj) => {reject(obj);} ) // error msg in the response body
+                .catch( (err) => {reject({ errors: [{ param: "Application", msg: "Cannot parse server response" }] }) }); // something else
+            }
+        }).catch( (err) => {reject({ errors: [{ param: "Server", msg: "Cannot communicate" }] }) }); // connection errors
+    });
+}
+
+const API = { getPublicCars, userLogin, userLogout, isAuthenticated, getRentsHistory, getRentProposal, payment};
 export default API;
