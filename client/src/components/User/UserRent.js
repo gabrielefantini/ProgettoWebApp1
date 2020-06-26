@@ -61,15 +61,16 @@ export default function UserRent({...rest}){
         const newStartDate = moment(startDate).format('YYYY-MM-DD 00:00:00');
         const newEndDate = moment(endDate).format('YYYY-MM-DD 00:00:00');
         const newDriverAge = moment(driverAge).format('YYYY-MM-DD 00:00:00');
-        console.log(newDriverAge);
-        API.getRentProposal({startDate:newStartDate, endDate:newEndDate, category, driverAge:newDriverAge, additionalDrivers, dailyKm, extraInsurance})
-        .then((res) => {setRentProposal(res); console.log(res);})
-        .catch((err)=> {
-            if(err.status === 401)
-                history.push('/login');
-            else 
-                console.log(err);
-        });//TODO
+        if(startDate && endDate && category && driverAge && additionalDrivers && dailyKm){
+            API.getRentProposal({startDate:newStartDate, endDate:newEndDate, category, driverAge:newDriverAge, additionalDrivers, dailyKm, extraInsurance})
+            .then((res) => {setRentProposal(res); console.log(res);})
+            .catch((err)=> {
+                            if(err.status === 401)
+                                history.push('/login');
+                            else 
+                                console.log(err);
+                            });//TODO
+        }
     },[startDate, endDate, category, driverAge, additionalDrivers, dailyKm, extraInsurance, history]);
 
     return(

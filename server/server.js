@@ -135,6 +135,14 @@ app.get('/api/rentsHistory', (req, res) => {
 });
 
 //GET /rentProposal/<rentRequest>
+/**
+ * Ritorna una rentProposal
+ * 
+ * Se si vuole garantire che questa non sia modificata dall'utente, va aggiunta una firma, che sarà poi verificata nel momento del pagamento
+ * Inoltre andrebbe "fermata" una macchina della categoria relativa alla proposta...
+ * se l'utente richiede una nuova proposta o se passa un certo intervallo di tempo, la macchina verrà liberata
+ */
+
 app.get('/api/rentProposal/:startDate/:endDate/:category/:driverAge/:additionalDrivers/:dailyKm/:extraInsurance', (req, res) => {
     const user = req.user && req.user.user;
     const options = {...req.params};
@@ -160,31 +168,35 @@ app.get('/api/rentProposal/:startDate/:endDate/:category/:driverAge/:additionalD
  *                  category:
  *                  coast:
  *              }
- *  }
- * 
- * N.B. è possibile firmare una proposta di noleggio dal server così che il costo non possa essere alterato dal client 
+ *  } 
+ *
  */
 
 app.post('/api/payments', (req,res) => {
     const paymentRequest = req.body;
+
     if(!paymentRequest){
         res.status(400).end();
     } else {
         const user = req.user && req.user.user;
+        //modulo interno al server che dovrebbe pagare l'importo
         paymentS.payment(paymentRequest.cardHolder, paymentRequest.cardNumber, paymentRequest.cardCvv, paymentRequest.rentProposal.coast)
         .then((answer) => {
-            if(answer === 'YES'){
-                console.log("fffffffffffff");
+            //una volta pagato l'importo
+            if(answer === 'OK'){
 
                 const user = req.user && req.user.user;
+
                 let rent = {...paymentRequest.rentProposal};
                 rent.userId = user;
                 
+                //prendo una macchina tra quelle della categoria scelta... N.B. questo potrebbe causare problemi con più prenotazioni contemporanee
                 carDao.getOneAvailableCar(rent.startDate, rent.endDate, rent.category)
                 .then((car) =>{
                     rent.carId = car.id;
                     
                     console.log(car);
+                    //aggiungo un noleggio al database
                     rentDao.createRent(rent.userId, rent.carId, rent.startDate, rent.endDate, rent.coast)
                     .then((id) => res.status(201).json({"id" : id}))
                     .catch((err) => {});
@@ -195,6 +207,16 @@ app.post('/api/payments', (req,res) => {
         })
         .catch((err) => {})
     }
+});
+
+//DELETE /rents/<rentId>
+app.delete('/api/rents/:rentId',(req, res) => {
+    const user = req.user && req.user.user;
+    rentDao.deleteRent(req.params.rentId, user)
+    .then((result) => res.status(204).end())
+    .catch((err) => {
+        res.status(500).json({errors: [{'param': 'Server', 'msg': err}],});
+    });
 });
 
 //activate server

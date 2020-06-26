@@ -37,7 +37,6 @@ exports.getRentNumberByUserId = (userId) => {
 
 exports.createRent = (userId, carId, startDate, endDate, coast) => {
     return new Promise((resolve, reject) => {
-        console.log("DIoostronzooo");
         const sql = `INSERT INTO rent (userId, carId, startDate, endDate, coast)
                             VALUES (?,?,?,?,?)`;
         db.all(sql, [userId, carId, startDate, endDate, coast], (err, row) => {
@@ -49,4 +48,16 @@ exports.createRent = (userId, carId, startDate, endDate, coast) => {
             }
         })
     });
+}
+
+exports.deleteRent = (id, userId) => {
+    return new Promise((resolve, reject) => {
+        const sql = `DELETE FROM rent WHERE id = ? AND userId = ?`;
+        db.run(sql, [id, userId], (err) => {
+            if(err)
+                reject(err);
+            else 
+                resolve(null);
+        })
+    })
 }

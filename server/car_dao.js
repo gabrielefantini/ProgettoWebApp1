@@ -51,13 +51,16 @@ exports.getOneAvailableCar = (start, end, category) => {
                                                                 (endDate <= ? AND startDate >= ?)
                                     )
                     AND category = ?`  //tutti quelli che iniziano nell'intervallo, tutti quelli che finiscono nell'intervallo, tutti quelli che comprendono l'intervallo
-        db.all(sql, [start, end, start, end, category], (err, rows)=>{
+        db.all(sql, [start, end, start, end, start, end, category], (err, rows)=>{
             if (err) 
                 reject(err);
-            else if (rows.length === 0)
+            else if (rows.length === 0){
+                console.log("not found");
                 resolve(undefined);
+            }
             else{
                 const car = createCar(rows[0]);
+                console.log(car);
                 resolve(car);
             }
         });

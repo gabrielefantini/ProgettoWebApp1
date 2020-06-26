@@ -96,7 +96,7 @@ async function getRentProposal(rentRequest) {
     }
 }
 
-async function payment (paymentRequest){
+async function payment(paymentRequest){
     return new Promise((resolve, reject) => {
         fetch(baseURL + "/payments", {
             method: 'POST',
@@ -117,5 +117,23 @@ async function payment (paymentRequest){
     });
 }
 
-const API = { getPublicCars, userLogin, userLogout, isAuthenticated, getRentsHistory, getRentProposal, payment};
+async function deleteRent(rentId) {
+    return new Promise((resolve, reject) => {
+        fetch(baseURL + "/rents/" + rentId, {
+            method: 'DELETE'
+        }).then( (response) => {
+            if(response.ok) {
+                resolve(null);
+            } else {
+                // analyze the cause of error
+                response.json()
+                .then( (obj) => {reject(obj);} ) // error msg in the response body
+                .catch( (err) => {reject({ errors: [{ param: "Application", msg: "Cannot parse server response" }] }) }); // something else
+            }
+        }).catch( (err) => {reject({ errors: [{ param: "Server", msg: "Cannot communicate" }] }) }); // connection errors
+    });
+}
+
+
+const API = { getPublicCars, userLogin, userLogout, isAuthenticated, getRentsHistory, getRentProposal, payment, deleteRent};
 export default API;
