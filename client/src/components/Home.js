@@ -105,7 +105,7 @@ export default function Home({cat, bran, ...rest}){
                             </SecondaryWindow>
                     </Col>
                     <Col md={8} sm={8} >
-                        <SecondaryWindow title={"Risultati Ricerca"} >
+                        <SecondaryWindow title={"Flotta Auto"} >
                             <List cars={carsToBeDisplayed}/>
                         </SecondaryWindow>
                     </Col>

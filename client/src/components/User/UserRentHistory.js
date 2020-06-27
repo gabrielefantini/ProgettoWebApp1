@@ -103,7 +103,7 @@ function HistoryListElement({id, startDate, endDate, coast, deleteRent, ...rest}
         <tr>  
             <td>{start}</td>
             <td>{end}</td>
-            <td>{coast}</td>
+            <td>€{coast}</td>
             <td>
                 <Button variant="danger" disabled={!isCancellable()} onClick={(event)=>handleCancellation(event)}>
                     Revoca Noleggio

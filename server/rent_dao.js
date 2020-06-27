@@ -41,7 +41,6 @@ exports.createRent = (userId, carId, startDate, endDate, coast) => {
                             VALUES (?,?,?,?,?)`;
         db.all(sql, [userId, carId, startDate, endDate, coast], (err, row) => {
             if(err){
-                console.log(err);
                 reject(err);
             } else {
                 resolve(row);

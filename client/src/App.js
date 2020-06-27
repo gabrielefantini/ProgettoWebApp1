@@ -20,7 +20,11 @@ function App() {
       {name:"Audi", isChecked:false},
       {name:"Fiat", isChecked:false},
       {name:"Ferrari", isChecked:false},
-      {name:"Lamborghini", isChecked:false}
+      {name:"Lamborghini", isChecked:false},
+      {name:"Bmw", isChecked:false},
+      {name:"Dacia", isChecked:false},
+      {name:"Ford", isChecked:false},
+      {name:"Tesla", isChecked:false}
     ];
 
   return (
