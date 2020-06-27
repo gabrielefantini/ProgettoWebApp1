@@ -19,8 +19,9 @@ export default function Login(){
             history.push({pathname:"/user"});
         })
         .catch((errorObj) => {
-            console.log(errorObj);//TODO
-            if(errorObj.errors.length!==0)
+            console.log(errorObj);
+            //Se fallisce l'autenticazione
+            if(errorObj.errors)
                 setErrMsg(errorObj.errors[0].msg);
         });
     }
@@ -31,7 +32,8 @@ export default function Login(){
             history.push({pathname:"/user"});
         })
         .catch((err) => {
-            console.log(err); //TODO
+            //Do nothing
+            console.log(err);
         });
     }, [history]);
 
@@ -67,7 +69,6 @@ function LoginForm({postLogin, username, password, handleUsername, handlePasswor
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        //() => handleLogin(username, password);
         postLogin();
     }
 

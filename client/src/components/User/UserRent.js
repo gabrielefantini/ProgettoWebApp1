@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Col, Row, DropdownButton, Dropdown, Navbar as SecondaryNavbar, Nav, Form} from 'react-bootstrap';
+import { Container, Col, Row, DropdownButton, Dropdown, Navbar as SecondaryNavbar, Nav, Form, Card} from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 import moment from 'moment';
 import API from '../../api/API';
@@ -11,22 +11,11 @@ import "react-datepicker/dist/react-datepicker.css";
 
 
 export default function UserRent({...rest}){
-    /*
-    const filter = {
-        startDate:"11-12-2015",
-        endDate:"15-12-2015",
-        category:"A",
-        driverAge:"10-12-1997",
-        additionalDrivers: 3,
-        dailyKm: 100,
-        extraInsurance:false
-    }
-    */
 
     const [startDate, setStartDate] = React.useState(new Date());
     const [endDate, setEndDate] = React.useState();
     const [category, setCategory] = React.useState("ScegliCategoria");
-    const [driverAge, setDriverAge] = React.useState();
+    const [driverAge, setDriverAge] = React.useState(new Date("70,5,24"));
     const [additionalDrivers, setAdditionalDrivers] = React.useState("0");
     const [dailyKm, setDailyKm] = React.useState("20");
     const [extraInsurance, setExtraInsurance] = React.useState(false);
@@ -68,11 +57,11 @@ export default function UserRent({...rest}){
                 setRentProposal(res);
             })
             .catch((err)=> {
-                            if(err.status === 401)
+                            if(err.status && err.status === 401)
                                 history.push('/login');
                             else 
                                 console.log(err);
-                            });//TODO
+                            });
         }
     },[startDate, endDate, category, driverAge, additionalDrivers, dailyKm, extraInsurance, history]);
 
@@ -196,16 +185,19 @@ function RentForm({handleForm, categories,
         );
 }
 
-function RentResult({rentProposal, ...rest}){ //TODO va modificata!!!!!!!!!!!!!!!!!!!!!
+function RentResult({rentProposal, ...rest}){
     return(
-        <Row className="border border-dark">
-            <Col>
-                <p>Costo: €{rentProposal.coast}</p> <br></br>
-                <p>Disponibilità: {rentProposal.availability}</p>
+        <Row>
+            <Col md={{span:2, offset:5}} className="text-center">   
+                <Card bg="light" >
+                    <Card.Body>
+                        <Card.Subtitle className="mb-2 text-muted">Disponibilità: {rentProposal.availability}</Card.Subtitle>
+                        <Card.Title>Costo: €{rentProposal.coast}</Card.Title>
+                        <Payment {...rentProposal}></Payment>
+                    </Card.Body>
+                </Card>
             </Col>
-            <Col>
-                <Payment {...rentProposal}></Payment>
-            </Col>
+            
         </Row>
     );
 }

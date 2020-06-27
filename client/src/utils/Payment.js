@@ -35,7 +35,7 @@ export default function Payment({coast, ...rest}) {
 
     return (
       <>
-        <Button variant="primary" onClick={handleShow} disabled={coast===0||coast===undefined}>
+        <Button block variant="primary" onClick={handleShow} disabled={coast===0||coast===undefined}>
             Noleggia
         </Button>
   

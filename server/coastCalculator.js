@@ -3,7 +3,6 @@ const carDao = require('./car_dao');
 const rentDao = require('./rent_dao');
 const moment = require('moment');
 
-//TODO add error handling!!!!!!
 async function calculatePrice(user, options){
         let coast = 0;
         if(user && options.startDate && options.endDate && options.category && options.dailyKm && options.driverAge && options.additionalDrivers && options.extraInsurance){
@@ -12,6 +11,8 @@ async function calculatePrice(user, options){
                 const startDate = moment(options.startDate , 'YYYY-MM-DD');
                 const endDate = moment(options.endDate , 'YYYY-MM-DD');
                 const days = moment.duration(endDate.diff(startDate)).asDays();
+                if(days<0)
+                    throw({msg:"Invalid time interval"});
                 //1---> trovo tutte le macchine disponibili per quella data
                 const carsAvailable = await carDao.getAvailableCarsNumber(options.startDate, options.endDate, options.category);
                 if(carsAvailable === 0){
@@ -47,6 +48,8 @@ async function calculatePrice(user, options){
                 const current = moment();
                 const driverAge = parseInt(moment.duration(current.diff(driverBirth)).asYears());
 
+                if(driverAge<18)
+                    throw({msg:"Invalid birth date"});
                 if(driverAge<25)
                     coast = (coast/100) * 105;
                 if(driverAge>65)
@@ -73,8 +76,7 @@ async function calculatePrice(user, options){
                 throw Error(error);
             }
         } else {
-            const err = "Incomplete or wrong parameters";
-            throw err;
+            throw ({msg: "Incomplete or wrong parameters"});
         }
 }
 

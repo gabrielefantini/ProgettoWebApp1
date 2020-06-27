@@ -16,7 +16,9 @@ export default function User({...rest}){
       .then((user) => {
         setUsername(user.username);
       }).catch((err) => {
-        history.push({pathname:"/login"});
+        if (err.status && err.status === 401) {
+          history.push("/login");
+        }
       })
     }, [history]);
     

@@ -16,13 +16,11 @@ export default function NavBar({username, location, ...rest}){
                 {location==="/user"?(
                 <Navbar.Brand>
                     AutoNoleggio
-                
                 </Navbar.Brand>
             ):(
                 <Link to="/">
                 <Navbar.Brand>
                     AutoNoleggio
-                
                 </Navbar.Brand>
             </Link>
             )}

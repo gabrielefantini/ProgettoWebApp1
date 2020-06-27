@@ -5,7 +5,6 @@ import API from '../api/API';
 import SecondaryWindow from '../utils/SecondaryWindow';
 import List from '../utils/List';
 import NavBar from './NavBar';
-import "./Home.css";
 
 export default function Home({cat, bran, ...rest}){
 
@@ -118,7 +117,8 @@ export default function Home({cat, bran, ...rest}){
 
 function MainFilter({name, secondaryFilters, ...rest}){
     const [open, setOpen] = React.useState(false);
-    //N.B. in <Collapse> l'uso dell'id è segnalato come deprecato, chiedere al Prof
+
+    //N.B. in <Collapse> l'uso dell'id è segnalato come deprecato
     
     return(
        <Row>
@@ -128,7 +128,7 @@ function MainFilter({name, secondaryFilters, ...rest}){
                     onClick={() => setOpen(!open)}
                     aria-controls="filters"
                     aria-expanded={open}>
-                        {name}+
+                        {name} +
                     </Button>
            </Col>
             <Collapse in={open}>

@@ -16,7 +16,7 @@ export default function UserRentHistory(){
             setRents(res);
         })
         .catch((err) => {
-            if(err.status === 401)
+            if(err.status && err.status === 401)
                 history.push('/login');
             else
                 console.log(err);
@@ -31,13 +31,13 @@ export default function UserRentHistory(){
                 setRents(res);
              })
             .catch((err) => {
-                if(err.status === 401)
+                if(err.status && err.status === 401)
                     history.push('/login');
                 else
                     console.log(err);
             }))
         .catch((err) => {
-            console.log(err); //TODO
+            console.log(err);
         })
     }
 
